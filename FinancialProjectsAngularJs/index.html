@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body>
+	<div ng-app="myApp" ng-controller="myCtrl">
+		<div ng-style="myStyle">
+		 <h1 ng-style="h1Style">Return On Investment - AngularJs Project</h1>
+		</div>
+		<div ng-style="contentStyle">
+		<div><p style="text-align:center;color:black;" id="errorROI"></p>
+                <p style="text-align:center;color:black;" id="error2ROI"></p>
+                <p style="text-align:center;color:black;" id="error3ROI"></p>
+                    
+                </div>
+		<div ng-style="TabelaStyleDiv">
+			<table id="tabela_ROI" class="table" ng-style="TabelaStyle">
+                        <tr>
+                            <th>Zyski w tym samym czasie</th>
+                            <th>Kapitał z różnych źródeł</th>
+                        </tr>
+                        <tr>
+                            <th>Zyski (sprzekaż laptopów)</th>
+                            <th>Kapitał (Zyski niepodzielne)</th>
+                        </tr>
+                        
+                        <tr>
+                            <td><input type="numeric" id="Zysk1ROI" ng-model="Zysk1ROI" ></td>
+
+                            <td><input type="numeric" id="Kapital1ROI" ng-model="kap1ROI"></td>
+
+                        </tr>
+                        <tr>
+                            <th>Zyski (sprzedaż drukarek)</th>
+                            <th>Kapitał akcyjny</th>
+                        </tr>
+                        <tr>
+                            <td><input type="numeric" id="Zysk2ROI" ng-model="Zysk2ROI"></td>
+
+                            <td><input type="numeric" id="Kapital2ROI" ng-model="kap2ROI"></td>
+
+                        </tr>
+                        <tr>
+                            <th>Zyski (sprzekaż zasilaczy)</th>
+                            <th>Kapitał(Kredyt bankowy)</th>
+                        </tr>
+                        <tr>
+                            <td><input type="numeric" id="Zysk3ROI" ng-model="Zysk3ROI"></td>
+
+                            <td><input type="numeric" id="Kapital3ROI" ng-model="kap3ROI"></td>
+
+                        </tr>
+                        
+                        <tr>
+                            <th>Podatki od kapitałów</th><th>Udziały w sumie kapitału</th>
+                        </tr>
+                        <tr>
+                            <td><input type="numeric" id="idPodatekOdKapitalu1ROI" ng-model="pod1" ng-init="pod1=0.15" readonly> </td>
+                            <td> {{ udz1 | number}}</td>
+                       </tr>
+                        <tr>
+                            <td> <input type="numeric" id="idPodatekOdKapitalu2ROI" ng-model="pod2" ng-init="pod2=0.25" readonly>  </td>
+                            <td> {{ udz2 | number}}</td>
+                        </tr>
+                        <tr>
+                            <td><input type="numeric" id="idPodatekOdKapitalu3ROI" ng-model="pod3" ng-init="pod3=0.35" readonly> </td>
+                            <td>{{ udz3 | number}}</td>
+                        </tr>
+                        <tr>
+                            
+                            <td>>>>>>>>>>>>>>>>>>>></td>
+                            <td><input type="button" value="Obicz udziały" id="ObliczUdzialyROI" ng-click="ObliczUdzialyROI()" /></td>
+
+                        </tr>
+                        <tr>
+                            <th>Ważony koszt kapitału</th>
+                            <td>{{ wazonyKosztKapitalu}}  </td>
+                        </tr>
+                        <tr>
+                            <th id="wynik_ROI_etykieta">Wynik ROI</th>
+                            <td><p id="wynik_ROI">{{ wynikROI }}</p></td>
+
+                        </tr>
+                        <tr>
+                            <th>Kryterium decyzyjne</th>
+                            <td><p id="idOplacalnoscInwestycjiROI">{{ decyzjaOplacalnosci }}</p></td>
+                        </tr>
+                        
+                        <tr>
+                            <td><p><input ng-click="ObliczROI();" id="ObliczROI" type="button" value="OBLICZ" /></p></td>
+                            <td><p><input ng-click="ResetujROI();" id="ResetujROI" type="button" value="RESETUJ" /></p></td>
+
+                        </tr>
+                    </table>
+					</div>
+		</div>
+		<div ng-style="myFooterStyle">
+		 <h1 ng-style="h2FooterStyle">Bartosz Szmit Project</h1>
+		</div>
+	</div>
+	
+	<script>
+		var app = angular.module('myApp',[]);	
+		app.controller('myCtrl',['$scope',function($scope){
+			$scope.fullKapital=0;
+			//$scope.udz1=0;
+			//$scope.udz2=0
+			//$scope.udz3=0;
+			
+			
+			$scope.letters = /^[A-Za-z]+$/;
+			$scope.pusty_wynik = /^[Nan]$/;
+			$scope.brak_liter = /^$/;
+			
+			//$scope.zysk1ROI =  document.getElementById("Zysk1ROI").value;
+			//$scope.kapital1ROI = document.getElementById("Kapital1ROI").value;
+   
+			//$scope.zysk2ROI = document.getElementById("Zysk2ROI").value;
+			//$scope.kapital2ROI = document.getElementById("Kapital2ROI").value;
+			
+			//$scope.zysk3ROI = document.getElementById("Zysk3ROI").value;
+			//$scope.kapital3ROI = document.getElementById("Kapital3ROI").value;
+			
+			
+			
+			$scope.myStyle = {
+			"background-color":"black",
+			"padding-top":"30px",
+			"padding-bottom":"30px",
+			
+			};
+			$scope.h1Style = {
+				"color":"white",
+				"font-style":"italic",
+				"font-size":"30px",
+				"text-align":"center"
+			};
+			$scope.contentStyle = {
+				"background-color":"gray",
+				"padding-top":"15px",
+				"padding-bottom":"15px"
+			};
+			$scope.TabelaStyleDiv = {
+				
+				"width":"30%",
+				"margin-left":"35%",
+				"margin-right":"35%",
+				"background-color":"lightgray",
+				"border":"2px solid black"
+			};
+			$scope.myFooterStyle = {
+				"background-color":"black",
+				"padding-top":"30px",
+				"padding-bottom":"30px"
+			};
+			$scope.h2FooterStyle = {
+				"color":"white",
+				"font-style":"italic",
+				"font-size":"30px",
+				"text-align":"center"
+			};
+			$scope
+			$scope.ObliczUdzialyROI = function(){
+				
+				$scope.kap1ROI = parseFloat($scope.kap1ROI);
+				$scope.kap2ROI = parseFloat($scope.kap2ROI);
+				$scope.kap3ROI = parseFloat($scope.kap3ROI);
+				
+				$scope.full = $scope.kap1ROI+$scope.kap2ROI+$scope.kap3ROI;
+				$scope.udz1 = $scope.kap1ROI/$scope.full;
+				
+				$scope.udz2 = $scope.kap2ROI/$scope.full;
+				$scope.udz3 = $scope.kap3ROI/$scope.full;
+				
+			};
+			
+			$scope.ObliczROI = function(){
+				
+				/*if (zysk1ROI.match(letters) || kapital1ROI.match(letters) )
+				{
+					document.getElementById("errorROI").innerHTML = "Wprowadzono niepoprawne dane";
+					document.getElementById("wynik_wartosc").innerHTML = "brak wyniku";
+				}
+				else if (zysk1ROI.match(brak_liter) || kapital1ROI.match(brak_liter) )
+				{
+					document.getElementById("error2ROI").innerHTML = "Wypełnij wszystkie pola";
+					document.getElementById("wynik_wartosc").innerHTML = "brak wyniku";
+				}
+				
+				
+				if (zysk1ROI.match(/,/g)) zysk1ROI = zysk1ROI.replace(/,/g, ".");
+				if (kapital1ROI.match(/,/g)) kapital1ROI = kapital1ROI.replace(/,/g, ".");
+				
+
+				if (zysk2ROI.match(/,/g)) zysk2ROI = zysk2ROI.replace(/,/g, ".");
+				if (kapital2ROI.match(/,/g)) kapital2ROI = kapital2ROI.replace(/,/g, ".");
+
+				if (zysk3ROI.match(/,/g)) zysk3ROI = zysk3ROI.replace(/,/g, ".");
+				if (kapital3ROI.match(/,/g)) kapital3ROI = kapital3ROI.replace(/,/g, ".");*/
+				$scope.kap1ROI = parseFloat($scope.kap1ROI);
+				$scope.kap2ROI = parseFloat($scope.kap2ROI);
+				$scope.kap3ROI = parseFloat($scope.kap3ROI);
+				
+				$scope.koszt1 = parseFloat($scope.pod1);
+				$scope.koszt2 = parseFloat($scope.pod2);
+				$scope.koszt3 = parseFloat($scope.pod3);
+							
+				$scope.full = $scope.kap1ROI+$scope.kap2ROI+$scope.kap3ROI;
+				$scope.udz1 = $scope.kap1ROI/$scope.full;
+							
+				$scope.udz2 = $scope.kap2ROI/$scope.full;
+				$scope.udz3 = $scope.kap3ROI/$scope.full;
+
+				
+				$scope.mn1 = $scope.udz1*$scope.koszt1;
+				$scope.mn2 = $scope.udz2*$scope.koszt2;
+				$scope.mn3 = $scope.udz3*$scope.koszt3;
+				$scope.sw = $scope.mn1 + $scope.mn2 + $scope.mn3;
+				
+				$scope.wazonyKosztKapitalu = $scope.sw;
+				//console.log($scope.wazonyKosztKapitalu);
+				$scope.Zysk1ROI = parseFloat($scope.Zysk1ROI);
+				
+				
+				
+				console.log($scope.Zysk1ROI);
+				$scope.Zysk2ROI = parseFloat($scope.Zysk2ROI);
+				$scope.Zysk3ROI = parseFloat($scope.Zysk3ROI);
+				$scope.licznik = $scope.Zysk1ROI + $scope.Zysk2ROI + $scope.Zysk3ROI;
+				
+				$scope.mianownik = $scope.kap1ROI + $scope.kap2ROI + $scope.kap3ROI;
+				//$scope.licznik = parseFloat($scope.licznik);
+				//$scope.mianownik = parseFloat($scope.mianownik);
+				$scope.wynikROI = $scope.licznik/$scope.mianownik;
+				$scope.wynikROI = parseFloat($scope.wynikROI);
+				//console.log($scope.wynikROI);
+				
+				
+				if ($scope.wynikROI>$scope.wazonyKosztKapitalu)
+				{
+					$scope.decyzjaOplacalnosci = "Inwestycja jest opłacalna";
+				}
+				else if ($scope.wynikROI<$scope.wazonyKosztKapitalu)
+				{
+					$scope.decyzjaOplacalnosci = "Inwestycja nie jest opłacalna";
+				}
+				
+			
+			
+			};
+			$scope.ResetujROI = function(){
+				$scope.kap1ROI = "";
+				$scope.kap2ROI = "";
+				$scope.kap3ROI = "";
+				
+				$scope.Zysk1ROI = "";
+				$scope.Zysk2ROI = "";
+				$scope.Zysk3ROI = "";
+				
+				$scope.wazonyKosztKapitalu = "";
+				$scope.decyzjaOplacalnosci = "";
+				$scope.wynikROI = "";
+				
+				$scope.udz1 = "";
+				$scope.udz2 = "";
+				$scope.udz3 = "";
+				
+				
+				/*$scope.pod1 = "";
+				$scope.pod2 = "";
+				$scope.pod3 = "";*/
+				
+			};
+			
+		}]);
+		
+	</script>
+</body>
+</html>
